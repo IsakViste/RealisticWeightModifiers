@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "realisticweightmodifiers",
+  "name": "Realistic Weight Modifiers",
+  "description": "Adds weight value to minecraft items that will affect player speed.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/IsakViste/Realistic-Weight-Modifiers",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Mentits", "PocketStealer"],
+  "credits": "The Forge and FML guys",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
