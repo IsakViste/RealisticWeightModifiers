@@ -1,0 +1,196 @@
+[
+  {
+    link: "http://www.minecraft-servers-list.org/id-list/",
+    modid: "minecraft",
+    items: [
+      {
+        id: "stone",
+        weight: 50
+      },
+      {
+        id: "grass",
+        weight: 30
+      },
+      {
+        id: "dirt",
+        weight: 20
+      },
+      {
+        id: "cobblestone",
+        weight: 50
+      },
+      {
+        id: "planks",
+        weight: 20
+      },
+      {
+        id: "sapling",
+        weight: 5
+      },
+      {
+        id: "sand",
+        weight: 15
+      },
+      {
+        id: "gravel",
+        weight: 15
+      },
+      {
+        id: "gold_ore",
+        weight: 60
+      },
+      {
+        id: "iron_ore",
+        weight: 60
+      },
+      {
+        id: "coal_ore",
+        weight: 60
+      },
+      {
+        id: "log",
+        weight: 80
+      },
+      {
+        id: "leaves",
+        weight: 2
+      },
+      {
+        id: "sponge",
+        weight: 10
+      },
+      {
+        id: "glass",
+        weight: 10
+      },
+      {
+        id: "lapis_ore",
+        weight: 60
+      },
+      {
+        id: "dispenser",
+        weight: 100
+      },
+      {
+        id: "sandstone",
+        weight: 60
+      },
+      {
+        id: "noteblock",
+        weight: 100
+      },
+      {
+        id: "golden_rail",
+        weight: 120
+      },
+      {
+        id: "detector_rail",
+        weight: 120
+      },
+      {
+        id: "sticky_piston",
+        weight: 100
+      },
+      {
+        id: "web",
+        weight: 2
+      },
+      {
+        id: "tallgrass",
+        weight: 2
+      },
+      {
+        id: "deadbush",
+        weight: 2
+      },
+      {
+        id: "piston",
+        weight: 100
+      },
+      {
+        id: "wool",
+        weight: 10
+      },
+      {
+        id: "yellow_flower",
+        weight: 2
+      },
+      {
+        id: "red_flower",
+        weight: 2
+      },
+      {
+        id: "brown_mushroom",
+        weight: 3
+      },
+      {
+        id: "red_mushroom",
+        weight: 3
+      },
+      {
+        id: "gold_block",
+        weight: 270
+      },
+      {
+        id: "iron_block",
+        weight: 270
+      },
+      {
+        id: "stone_slab",
+        weight: 25
+      },
+      {
+        id: "brick_block",
+        weight: 60
+      },
+      {
+        id: "tnt",
+        weight: 30
+      },
+      {
+        id: "bookshelf",
+        weight: 40
+      },
+      {
+        id: "mossy_cobblestone",
+        weight: 50
+      },
+      {
+        id: "obsidian",
+        weight: 150
+      },
+      {
+        id: "torch",
+        weight: 10
+      },
+      {
+        id: "mob_spawner",
+        weight: 60
+      },
+      {
+        id: "oak_stairs",
+        weight: 40
+      },
+      {
+        id: "chest",
+        weight: 80
+      },
+      {
+        id: "diamond_ore",
+        weight: 60
+      },
+      {
+        id: "diamond_block",
+        weight: 270
+      },
+      {
+        id: "crafting_table",
+        weight: 80
+      },
+      {
+        id: "furnace",
+        weight: 120
+      }
+    ]
+  }
+]
