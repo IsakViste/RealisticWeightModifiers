@@ -13,20 +13,22 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viste.realisticweightmodifiers.RealisticWeightModifiers;
 import com.viste.realisticweightmodifiers.Reference;
 
-import net.minecraft.item.ItemArmor;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class CheckInventory {
-	int inventorySlots = 41; // hotbar + inventory + armor + off-hand
+	public int playerWeightCap = 5000;
+	public int playerCurrentWeight;
 	
-	public List<Weights> items = new ArrayList<Weights>();
+	public List<Weights> weights = new ArrayList<Weights>();
 
 	private static final Logger log = LogManager.getLogger(Reference.MODID);
 	
@@ -57,16 +59,16 @@ public class CheckInventory {
 		try {
 			log.info("(JSON File) Loading");
 			
-			List<Weights> weights;
+			List<Mods> mods;
 			
 			log.info("-> (File Read) Reading JSON files");
 			try {
 				Gson gson = new Gson();
 				
-				// Tiers
+				// Weights
 				BufferedReader brWeights = new BufferedReader(new FileReader(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.JSON_CONFIG_VALUES_PATH)));
-				Type typeWeights = new TypeToken<List<Weights>>(){}.getType();
-				weights = gson.fromJson(brWeights, typeWeights);
+				Type typeWeights = new TypeToken<List<Mods>>(){}.getType();
+				mods = gson.fromJson(brWeights, typeWeights);
 			} catch (IOException ioe) {
 				log.fatal("-> (File Read) Reading Failure");
 				log.fatal(ioe);
@@ -76,13 +78,22 @@ public class CheckInventory {
 			log.info("-> (File Read) Reading Success");
 			
 			try {
-				log.info("-> (Mods) Loading All");
-				for(int i = 0; i < weights.size(); i++) {
-					
+				log.info("-> (Weights) Loading All");
+				for(int i = 0; i < mods.size(); i++) {
+					for(int j = 0; j < mods.get(i).items.size(); j++) {
+						String path = mods.get(i).modid + ":" + mods.get(i).items.get(j).id.toLowerCase();
+						Item item = Item.getByNameOrId(path);
+						int weight = mods.get(i).items.get(j).weight;
+						if(item == null) {
+							log.warn("-> -> (Weight) " + mods.get(i).items.get(j).id + " was not found!");
+						} else {
+							weights.add(new Weights(item, weight));
+						}
+					}
 				}
-				log.info("-> (Mods) Loading Success");
+				log.info("-> (Weights) Loading Success");
 			} catch (Exception e) {
-				log.fatal("-> (Mods) Loading Failure");
+				log.fatal("-> (Weights) Loading Failure");
 				log.fatal(e);
 			}
 		} catch (Exception e) {
@@ -95,8 +106,13 @@ public class CheckInventory {
 	
 	@SubscribeEvent
 	public void onInventoryUpdate(PlayerTickEvent evt) {
-		for(int i = 0; i < inventorySlots; i++) {
-			
+		playerCurrentWeight = 0;
+		InventoryPlayer inventory = new InventoryPlayer(evt.player);
+		for(int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack is = inventory.getStackInSlot(i);
+			if(weights.contains(is.getItem())) {
+				playerCurrentWeight += weights.get(weights.indexOf(is.getItem())).getWeightOfItem();
+			}
 		}
 	}
 	
@@ -131,21 +147,36 @@ public class CheckInventory {
 	}
 }
 
+// http://www.minecraft-servers-list.org/id-list/
 class Weights {
-	private String modid;
-	private List<Items> items;
+	private Item item;
+	private int weight;
 	
-	public Weights(String modid, List<Items> items) {
+	public Weights(Item item, int weight) {
+		this.item = item;
+		this.weight = weight;
+	}
+	
+	public int getWeightOfItem() {
+		return weight;
+	}
+}
+
+class Mods {
+	public String modid;
+	public List<ModsItems> items;
+	
+	public Mods(String modid, List<ModsItems> items) {
 		this.modid = modid;
 		this.items = items;
 	}
 }
 
-class Items {
-	private String id;
-	private int weight;
+class ModsItems {
+	public String id;
+	public int weight;
 	
-	public Items(String id, int weight) {
+	public ModsItems(String id, int weight) {
 		this.id = id;
 		this.weight = weight;
 	}

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.viste.realisticweightmodifiers.proxy.IProxy;
 
+import net.minecraft.init.Items;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
