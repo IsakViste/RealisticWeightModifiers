@@ -33,21 +33,21 @@ public class RealisticWeightModifiers {
 		log.info("PreInitializing");
 		configFile = event.getModConfigurationDirectory();
 		
-		proxy.preInit();
+		proxy.preInit(event);
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		log.info("Initializing");
 		
-		proxy.init();
+		proxy.init(event);
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		log.info("PostInitializing");
 		
-		proxy.postInit();
+		proxy.postInit(event);
 	}
 	
 }

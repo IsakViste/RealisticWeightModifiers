@@ -6,27 +6,25 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.viste.realisticweightmodifiers.Config;
 import com.viste.realisticweightmodifiers.RealisticWeightModifiers;
 import com.viste.realisticweightmodifiers.Reference;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class CheckInventory {
-	public int playerWeightCap = 5000;
+	public int playerWeightCap = Config.playerCapacityCap;
 	public int playerCurrentWeight;
 	
 	private static final Logger log = LogManager.getLogger(Reference.MODID);
@@ -75,23 +73,37 @@ public class CheckInventory {
 			return;
 		}
 		log.info("(JSON File) Loading Success");
+		log.info("(Player Capacity) " + playerWeightCap);
 	}
 	
 	@SubscribeEvent
 	public void onInventoryUpdate(PlayerTickEvent evt) {
-		if(evt.player.inventory.inventoryChanged){
+		if(evt.player.inventory.inventoryChanged) {
 			playerCurrentWeight = 0;
 			evt.player.inventory.inventoryChanged = false;
 			for(int i = 0; i < evt.player.inventory.getSizeInventory(); i++) {
 				ItemStack is = evt.player.inventory.getStackInSlot(i);
 				if(is != null) {
-					if(is.getItem().getRegistryName().getResourceDomain() != null){					
-						if(weightMap.containsKey(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())){
-							playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())*is.stackSize;
+					if(is.getItem().getRegistryName().getResourceDomain() != null) {
+						if(weightMap.containsKey(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())) {
+							log.info("found!");
+							if(Config.weighWholeStack) {
+								playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())*is.stackSize;
+							} else {
+								playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath());
+							}
 						}
 					}
 				}
 			}
+			
+			if(playerCurrentWeight > playerWeightCap) {
+				evt.player.capabilities.setPlayerWalkSpeed(0.1f - ((playerCurrentWeight - playerWeightCap) / 100));
+			} else {
+				evt.player.capabilities.setPlayerWalkSpeed(0.1f);
+			}
+			
+			log.info("(Player Weight) " + playerCurrentWeight);
 		}
 	}
 	
@@ -127,11 +139,9 @@ public class CheckInventory {
 }
 
 // http://www.minecraft-servers-list.org/id-list/
-
 class JsonResponse {
     public String modid;
     List<Items> items = new ArrayList<Items>();
-
 }
 
 class Items {
