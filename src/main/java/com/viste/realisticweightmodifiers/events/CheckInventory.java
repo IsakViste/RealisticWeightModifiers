@@ -86,7 +86,6 @@ public class CheckInventory {
 				if(is != null) {
 					if(is.getItem().getRegistryName().getResourceDomain() != null) {
 						if(weightMap.containsKey(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())) {
-							log.info("found!");
 							if(Config.weighWholeStack) {
 								playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())*is.stackSize;
 							} else {
@@ -98,12 +97,10 @@ public class CheckInventory {
 			}
 			
 			if(playerCurrentWeight > playerWeightCap) {
-				evt.player.capabilities.setPlayerWalkSpeed(0.1f - ((playerCurrentWeight - playerWeightCap) / 100));
+				evt.player.capabilities.setPlayerWalkSpeed(0.1f - ((playerCurrentWeight - playerWeightCap) / Config.playerSpeedMod));
 			} else {
 				evt.player.capabilities.setPlayerWalkSpeed(0.1f);
 			}
-			
-			log.info("(Player Weight) " + playerCurrentWeight);
 		}
 	}
 	

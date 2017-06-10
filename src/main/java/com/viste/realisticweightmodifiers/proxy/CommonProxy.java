@@ -5,7 +5,9 @@ import java.io.File;
 import com.viste.realisticweightmodifiers.Config;
 import com.viste.realisticweightmodifiers.Reference;
 import com.viste.realisticweightmodifiers.events.CheckInventory;
+import com.viste.realisticweightmodifiers.handlers.RenderGuiHandler;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -21,6 +23,7 @@ public class CommonProxy implements IProxy {
 		config = new Configuration(new File(directory.getPath(), Reference.MODID + ".cfg"));
 		Config.readConfig();
 		
+		// Inventory
 		FMLCommonHandler.instance().bus().register(new CheckInventory());
 	}
 
@@ -32,5 +35,8 @@ public class CommonProxy implements IProxy {
 		if (config.hasChanged()) {
 			config.save();
 		}
+		
+		// GUI
+		FMLCommonHandler.instance().bus().register(new RenderGuiHandler());
 	}
 }
