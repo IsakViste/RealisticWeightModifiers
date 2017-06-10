@@ -6,9 +6,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +20,6 @@ import com.google.gson.reflect.TypeToken;
 import com.viste.realisticweightmodifiers.RealisticWeightModifiers;
 import com.viste.realisticweightmodifiers.Reference;
 
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,9 +29,9 @@ public class CheckInventory {
 	public int playerWeightCap = 5000;
 	public int playerCurrentWeight;
 	
-	public List<Weights> weights = new ArrayList<Weights>();
-
 	private static final Logger log = LogManager.getLogger(Reference.MODID);
+	
+    public HashMap<String, Integer> weightMap = new HashMap<String, Integer>();
 	
 	public CheckInventory() {
 		// Check / Copy the config files into the config folder
@@ -57,44 +58,16 @@ public class CheckInventory {
 		
 		// JSON File loading
 		try {
-			log.info("(JSON File) Loading");
-			
-			List<Mods> mods;
-			
-			log.info("-> (File Read) Reading JSON files");
-			try {
-				Gson gson = new Gson();
-				
-				// Weights
-				BufferedReader brWeights = new BufferedReader(new FileReader(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.JSON_CONFIG_VALUES_PATH)));
-				Type typeWeights = new TypeToken<List<Mods>>(){}.getType();
-				mods = gson.fromJson(brWeights, typeWeights);
-			} catch (IOException ioe) {
-				log.fatal("-> (File Read) Reading Failure");
-				log.fatal(ioe);
-				return;
-			}
-			
-			log.info("-> (File Read) Reading Success");
-			
-			try {
-				log.info("-> (Weights) Loading All");
-				for(int i = 0; i < mods.size(); i++) {
-					for(int j = 0; j < mods.get(i).items.size(); j++) {
-						String path = mods.get(i).modid + ":" + mods.get(i).items.get(j).id.toLowerCase();
-						Item item = Item.getByNameOrId(path);
-						int weight = mods.get(i).items.get(j).weight;
-						if(item == null) {
-							log.warn("-> -> (Weight) " + mods.get(i).items.get(j).id + " was not found!");
-						} else {
-							weights.add(new Weights(item, weight));
-						}
+			Gson gson = new Gson();
+			// Weights
+			BufferedReader brWeights = new BufferedReader(new FileReader(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.JSON_CONFIG_VALUES_PATH)));
+			List<JsonResponse> jsonResponse = gson.fromJson(brWeights, new TypeToken<List<JsonResponse>>(){}.getType());
+			for(int i = 0; i < jsonResponse.size() ; i++){
+				for(int j = 0; j < jsonResponse.get(i).items.size(); j++){
+					if(weightMap.containsKey(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id)){
+						weightMap.put(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id, jsonResponse.get(i).items.get(j).weight);
 					}
 				}
-				log.info("-> (Weights) Loading Success");
-			} catch (Exception e) {
-				log.fatal("-> (Weights) Loading Failure");
-				log.fatal(e);
 			}
 		} catch (Exception e) {
 			log.fatal("(JSON File) Loading Failure");
@@ -106,12 +79,18 @@ public class CheckInventory {
 	
 	@SubscribeEvent
 	public void onInventoryUpdate(PlayerTickEvent evt) {
-		playerCurrentWeight = 0;
-		InventoryPlayer inventory = new InventoryPlayer(evt.player);
-		for(int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack is = inventory.getStackInSlot(i);
-			if(weights.contains(is.getItem())) {
-				playerCurrentWeight += weights.get(weights.indexOf(is.getItem())).getWeightOfItem();
+		if(evt.player.inventory.inventoryChanged){
+			playerCurrentWeight = 0;
+			evt.player.inventory.inventoryChanged = false;
+			for(int i = 0; i < evt.player.inventory.getSizeInventory(); i++) {
+				ItemStack is = evt.player.inventory.getStackInSlot(i);
+				if(is != null) {
+					if(is.getItem().getRegistryName().getResourceDomain() != null){					
+						if(weightMap.containsKey(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())){
+							playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())*is.stackSize;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -148,36 +127,15 @@ public class CheckInventory {
 }
 
 // http://www.minecraft-servers-list.org/id-list/
-class Weights {
-	private Item item;
-	private int weight;
-	
-	public Weights(Item item, int weight) {
-		this.item = item;
-		this.weight = weight;
-	}
-	
-	public int getWeightOfItem() {
-		return weight;
-	}
+
+class JsonResponse {
+    public String modid;
+    List<Items> items = new ArrayList<Items>();
+
 }
 
-class Mods {
-	public String modid;
-	public List<ModsItems> items;
-	
-	public Mods(String modid, List<ModsItems> items) {
-		this.modid = modid;
-		this.items = items;
-	}
-}
-
-class ModsItems {
+class Items {
 	public String id;
 	public int weight;
-	
-	public ModsItems(String id, int weight) {
-		this.id = id;
-		this.weight = weight;
-	}
 }
+
