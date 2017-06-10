@@ -62,7 +62,7 @@ public class CheckInventory {
 			List<JsonResponse> jsonResponse = gson.fromJson(brWeights, new TypeToken<List<JsonResponse>>(){}.getType());
 			for(int i = 0; i < jsonResponse.size() ; i++){
 				for(int j = 0; j < jsonResponse.get(i).items.size(); j++){
-					if(weightMap.containsKey(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id)){
+					if(!weightMap.containsKey(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id)){
 						weightMap.put(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id, jsonResponse.get(i).items.get(j).weight);
 					}
 				}
