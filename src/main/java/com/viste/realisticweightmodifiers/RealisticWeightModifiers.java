@@ -20,8 +20,6 @@ public class RealisticWeightModifiers {
 	
 	public File configFile = null;
 	
-	private static final Logger log = LogManager.getLogger(Reference.MODID);
-	
 	@Instance(Reference.MODID)
     public static RealisticWeightModifiers instance;
 	
@@ -30,7 +28,7 @@ public class RealisticWeightModifiers {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		log.info("PreInitializing");
+		Reference.log.info("PreInitializing");
 		configFile = event.getModConfigurationDirectory();
 		
 		proxy.preInit(event);
@@ -38,14 +36,14 @@ public class RealisticWeightModifiers {
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		log.info("Initializing");
+		Reference.log.info("Initializing");
 		
 		proxy.init(event);
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		log.info("PostInitializing");
+		Reference.log.info("PostInitializing");
 		
 		proxy.postInit(event);
 	}

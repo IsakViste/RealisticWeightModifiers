@@ -10,7 +10,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RenderGuiHandler {
 	@SubscribeEvent
 	public void onRenderGui(RenderGameOverlayEvent.Post event) {
-		if (event.getType() != ElementType.EXPERIENCE) return;
+		if (event.getType() != ElementType.EXPERIENCE) {
+			return;
+		}
+		
 		new GuiWeight(Minecraft.getMinecraft());
 	}
 }

@@ -8,8 +8,6 @@ import com.viste.realisticweightmodifiers.proxy.CommonProxy;
 import net.minecraftforge.common.config.Configuration;
 
 public class Config {
-	private static final Logger log = LogManager.getLogger(Reference.MODID);
-	
 	// Categories
 	private static final String CATEGORY_GENERAL = "general";
 	
@@ -24,8 +22,8 @@ public class Config {
 			cfg.load();
 			initGeneralConfig(cfg);
 		} catch (Exception e) {
-			log.error("Problem loading config file!");
-			log.error(e);
+			Reference.log.error("Problem loading config file!");
+			Reference.log.error(e);
 		} finally {
 			if (cfg.hasChanged()) {
 				cfg.save();

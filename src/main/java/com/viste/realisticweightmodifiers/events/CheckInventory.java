@@ -27,8 +27,6 @@ public class CheckInventory {
 	public int playerWeightCap = Config.playerCapacityCap;
 	public int playerCurrentWeight;
 	
-	private static final Logger log = LogManager.getLogger(Reference.MODID);
-	
     public HashMap<String, Integer> weightMap = new HashMap<String, Integer>();
 	
 	public CheckInventory() {
@@ -38,17 +36,17 @@ public class CheckInventory {
 		
 		// Create config folder
 		if(!configDir.exists()) {
-			log.info("(Config Folder) Creating " + Reference.CONFIG_PATH);
+			Reference.log.info("(Config Folder) Creating " + Reference.CONFIG_PATH);
 			try {
 				configDir.mkdir();
 			} catch (SecurityException se) {
-				log.fatal("(Config Folder) Creation Failed");
-				log.fatal(se);
+				Reference.log.fatal("(Config Folder) Creation Failed");
+				Reference.log.fatal(se);
 				return;
 			}
-			log.info("(Config Folder) Creation Success");
+			Reference.log.info("(Config Folder) Creation Success");
 		} else {
-			log.info("(Config Folder) Found " + Reference.CONFIG_PATH);
+			Reference.log.info("(Config Folder) Found " + Reference.CONFIG_PATH);
 		}
 		
 		// Create VALUES & SETS config
@@ -68,12 +66,12 @@ public class CheckInventory {
 				}
 			}
 		} catch (Exception e) {
-			log.fatal("(JSON File) Loading Failure");
-			log.fatal(e);
+			Reference.log.fatal("(JSON File) Loading Failure");
+			Reference.log.fatal(e);
 			return;
 		}
-		log.info("(JSON File) Loading Success");
-		log.info("(Player Capacity) " + playerWeightCap);
+		Reference.log.info("(JSON File) Loading Success");
+		Reference.log.info("(Player Capacity) " + playerWeightCap);
 	}
 	
 	@SubscribeEvent
@@ -107,7 +105,7 @@ public class CheckInventory {
 	// Copy from 'asset' into 'file'
 	void copyFile(File file, String asset) {
 		if(!file.exists()) {
-			log.info("(JSON File) Copying " + asset);
+			Reference.log.info("(JSON File) Copying " + asset);
 			try {
 				file.createNewFile();
 				
@@ -124,14 +122,18 @@ public class CheckInventory {
 				instream.close();
 				outstream.close();
 			} catch (IOException ioe) {
-				log.fatal("(JSON File) Copy Failed");
-				log.fatal(ioe);
+				Reference.log.fatal("(JSON File) Copy Failed");
+				Reference.log.fatal(ioe);
 				return;
 			}
-			log.info("(JSON File) Copy Success");
+			Reference.log.info("(JSON File) Copy Success");
 		} else {
-			log.info("(JSON File) Found " + asset); 
+			Reference.log.info("(JSON File) Found " + asset); 
 		}
+	}
+	
+	public int getPlayerCurrentWeight() {
+		return playerCurrentWeight;
 	}
 }
 

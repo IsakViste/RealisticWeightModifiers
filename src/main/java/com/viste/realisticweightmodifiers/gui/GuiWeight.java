@@ -4,6 +4,7 @@ import com.viste.realisticweightmodifiers.Config;
 import com.viste.realisticweightmodifiers.events.CheckInventory;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 
@@ -15,6 +16,7 @@ public class GuiWeight extends Gui {
 		int width = scaled.getScaledWidth();
 		int height = scaled.getScaledHeight();
 		
-		drawString(mc.fontRendererObj, weight, 2, 2, Integer.parseInt("AAAAAA", 16));
+		// string height = 8
+		drawString(mc.fontRendererObj, weight, width - mc.fontRendererObj.getStringWidth(weight) - 2, height - 10, Integer.parseInt("AAAAAA", 16));
 	}
 }

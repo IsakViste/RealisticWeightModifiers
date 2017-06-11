@@ -19,6 +19,8 @@ public class CommonProxy implements IProxy {
 	public static Configuration config;
 	
 	public void preInit(FMLPreInitializationEvent e) {
+		Reference.log = e.getModLog();
+		
 		File directory = e.getModConfigurationDirectory();
 		config = new Configuration(new File(directory.getPath(), Reference.MODID + ".cfg"));
 		Config.readConfig();
