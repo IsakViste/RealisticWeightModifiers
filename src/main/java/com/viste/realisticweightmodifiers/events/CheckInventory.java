@@ -19,6 +19,7 @@ import com.viste.realisticweightmodifiers.Config;
 import com.viste.realisticweightmodifiers.RealisticWeightModifiers;
 import com.viste.realisticweightmodifiers.Reference;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -59,11 +60,14 @@ public class CheckInventory {
 			BufferedReader brWeights = new BufferedReader(new FileReader(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.JSON_CONFIG_VALUES_PATH)));
 			List<JsonResponse> jsonResponse = gson.fromJson(brWeights, new TypeToken<List<JsonResponse>>(){}.getType());
 			for(int i = 0; i < jsonResponse.size() ; i++){
+				int a = 0;
 				for(int j = 0; j < jsonResponse.get(i).items.size(); j++){
 					if(!weightMap.containsKey(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id)){
+						a++;
 						weightMap.put(jsonResponse.get(i).modid+":"+jsonResponse.get(i).items.get(j).id, jsonResponse.get(i).items.get(j).weight);
 					}
 				}
+				Reference.log.info("(JSON) " + a + " items have been loaded from " + jsonResponse.get(i).modid);
 			}
 		} catch (Exception e) {
 			Reference.log.fatal("(JSON File) Loading Failure");
@@ -76,7 +80,7 @@ public class CheckInventory {
 	
 	@SubscribeEvent
 	public void onInventoryUpdate(PlayerTickEvent evt) {
-		if(evt.player.inventory.inventoryChanged) {
+		if(evt.player.inventory.inventoryChanged && !evt.player.capabilities.isCreativeMode) {
 			playerCurrentWeight = 0;
 			evt.player.inventory.inventoryChanged = false;
 			for(int i = 0; i < evt.player.inventory.getSizeInventory(); i++) {

@@ -13,7 +13,7 @@ public class Config {
 	
 	// Values you can access
 	public static boolean weighWholeStack = true;
-	public static int playerCapacityCap = 5000;
+	public static int playerCapacityCap = 500;
 	public static int playerSpeedMod = playerCapacityCap / 5 * 10;
 	
 	public static void readConfig() {
