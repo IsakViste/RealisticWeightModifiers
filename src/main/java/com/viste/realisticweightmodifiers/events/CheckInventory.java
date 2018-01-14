@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viste.realisticweightmodifiers.Config;
@@ -20,8 +17,7 @@ import com.viste.realisticweightmodifiers.RealisticWeightModifiers;
 import com.viste.realisticweightmodifiers.Reference;
 import com.viste.realisticweightmodifiers.gui.GuiWeight;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -30,16 +26,12 @@ public class CheckInventory {
 	private int playerWeightCap = Config.playerCapacityCap;
 	private int playerCurrentWeight;
 	
-	private GuiWeight guiWeight;
-	
     public HashMap<String, Integer> weightMap = new HashMap<String, Integer>();
 	
 	public CheckInventory() {
 		// Check / Copy the config files into the config folder
 		File configDir = new File(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.CONFIG_PATH));
 		File jsonConfigWeights = new File(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.JSON_CONFIG_VALUES_PATH));
-		
-		this.guiWeight = new GuiWeight();
 		
 		// Create config folder
 		if(!configDir.exists()) {
@@ -117,8 +109,13 @@ public class CheckInventory {
 				evt.player.capabilities.setPlayerWalkSpeed(0.1f);
 			}
 			
-			this.guiWeight.render(this.getPlayerCurrentWeight() + " / " + this.getPlayerWeightCap());
+			
 		}
+	}
+	
+	
+	public String getStringForGUI() {
+		return this.getPlayerCurrentWeight() + " / " + this.getPlayerWeightCap();
 	}
 	
 	// Copy from 'asset' into 'file'

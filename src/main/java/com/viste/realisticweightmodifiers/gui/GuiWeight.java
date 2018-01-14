@@ -1,8 +1,5 @@
 package com.viste.realisticweightmodifiers.gui;
 
-import com.viste.realisticweightmodifiers.Config;
-import com.viste.realisticweightmodifiers.events.CheckInventory;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;

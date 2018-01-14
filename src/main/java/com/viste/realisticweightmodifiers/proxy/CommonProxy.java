@@ -9,7 +9,6 @@ import com.viste.realisticweightmodifiers.handlers.RenderGuiHandler;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -17,6 +16,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class CommonProxy implements IProxy {
 	
 	public static Configuration config;
+	
+	private CheckInventory checkInventory;
 	
 	public void preInit(FMLPreInitializationEvent e) {
 		Reference.log = e.getModLog();
@@ -26,7 +27,8 @@ public class CommonProxy implements IProxy {
 		Config.readConfig();
 		
 		// Inventory
-		MinecraftForge.EVENT_BUS.register(new CheckInventory());
+		checkInventory = new CheckInventory();
+		MinecraftForge.EVENT_BUS.register(checkInventory);
 	}
 
 	public void init(FMLInitializationEvent e) {
@@ -38,7 +40,6 @@ public class CommonProxy implements IProxy {
 			config.save();
 		}
 		
-		// GUI
-		MinecraftForge.EVENT_BUS.register(new RenderGuiHandler());
+		MinecraftForge.EVENT_BUS.register(new RenderGuiHandler(checkInventory));
 	}
 }
