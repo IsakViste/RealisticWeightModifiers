@@ -26,7 +26,7 @@ public class CommonProxy implements IProxy {
 		Config.readConfig();
 		
 		// Inventory
-		FMLCommonHandler.instance().bus().register(new CheckInventory());
+		MinecraftForge.EVENT_BUS.register(new CheckInventory());
 	}
 
 	public void init(FMLInitializationEvent e) {
@@ -39,6 +39,6 @@ public class CommonProxy implements IProxy {
 		}
 		
 		// GUI
-		FMLCommonHandler.instance().bus().register(new RenderGuiHandler());
+		MinecraftForge.EVENT_BUS.register(new RenderGuiHandler());
 	}
 }

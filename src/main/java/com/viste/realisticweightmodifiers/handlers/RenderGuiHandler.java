@@ -14,6 +14,6 @@ public class RenderGuiHandler {
 			return;
 		}
 		
-		new GuiWeight(Minecraft.getMinecraft());
+		//new GuiWeight().render("Player Weight");
 	}
 }

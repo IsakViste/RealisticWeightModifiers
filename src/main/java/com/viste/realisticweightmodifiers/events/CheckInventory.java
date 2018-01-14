@@ -18,15 +18,19 @@ import com.google.gson.reflect.TypeToken;
 import com.viste.realisticweightmodifiers.Config;
 import com.viste.realisticweightmodifiers.RealisticWeightModifiers;
 import com.viste.realisticweightmodifiers.Reference;
+import com.viste.realisticweightmodifiers.gui.GuiWeight;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class CheckInventory {
-	public int playerWeightCap = Config.playerCapacityCap;
-	public int playerCurrentWeight;
+	private int playerWeightCap = Config.playerCapacityCap;
+	private int playerCurrentWeight;
+	
+	private GuiWeight guiWeight;
 	
     public HashMap<String, Integer> weightMap = new HashMap<String, Integer>();
 	
@@ -35,11 +39,13 @@ public class CheckInventory {
 		File configDir = new File(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.CONFIG_PATH));
 		File jsonConfigWeights = new File(new String(RealisticWeightModifiers.instance.configFile.getPath() + Reference.JSON_CONFIG_VALUES_PATH));
 		
+		this.guiWeight = new GuiWeight();
+		
 		// Create config folder
 		if(!configDir.exists()) {
 			Reference.log.info("(Config Folder) Creating " + Reference.CONFIG_PATH);
 			try {
-				configDir.mkdir();
+				configDir.mkdirs();
 			} catch (SecurityException se) {
 				Reference.log.fatal("(Config Folder) Creation Failed");
 				Reference.log.fatal(se);
@@ -78,18 +84,25 @@ public class CheckInventory {
 		Reference.log.info("(Player Capacity) " + playerWeightCap);
 	}
 	
+	public int getPlayerWeightCap() {
+		return playerWeightCap;
+	}
+	
+	public int getPlayerCurrentWeight() {
+		return playerCurrentWeight;
+	}
+	
 	@SubscribeEvent
 	public void onInventoryUpdate(PlayerTickEvent evt) {
-		if(evt.player.inventory.inventoryChanged && !evt.player.capabilities.isCreativeMode) {
+		if(!evt.player.capabilities.isCreativeMode) {
 			playerCurrentWeight = 0;
-			evt.player.inventory.inventoryChanged = false;
 			for(int i = 0; i < evt.player.inventory.getSizeInventory(); i++) {
 				ItemStack is = evt.player.inventory.getStackInSlot(i);
 				if(is != null) {
 					if(is.getItem().getRegistryName().getResourceDomain() != null) {
 						if(weightMap.containsKey(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())) {
 							if(Config.weighWholeStack) {
-								playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath())*is.stackSize;
+								playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath()) * is.getCount();
 							} else {
 								playerCurrentWeight += weightMap.get(is.getItem().getRegistryName().getResourceDomain()+":"+is.getItem().getRegistryName().getResourcePath());
 							}
@@ -99,10 +112,12 @@ public class CheckInventory {
 			}
 			
 			if(playerCurrentWeight > playerWeightCap) {
-				evt.player.capabilities.setPlayerWalkSpeed(0.1f - ((playerCurrentWeight - playerWeightCap) / Config.playerSpeedMod));
+				evt.player.capabilities.setPlayerWalkSpeed(0.1f - ((float)(playerCurrentWeight - playerWeightCap) / Config.playerSpeedMod));
 			} else {
 				evt.player.capabilities.setPlayerWalkSpeed(0.1f);
 			}
+			
+			this.guiWeight.render(this.getPlayerCurrentWeight() + " / " + this.getPlayerWeightCap());
 		}
 	}
 	
@@ -134,10 +149,6 @@ public class CheckInventory {
 		} else {
 			Reference.log.info("(JSON File) Found " + asset); 
 		}
-	}
-	
-	public int getPlayerCurrentWeight() {
-		return playerCurrentWeight;
 	}
 }
 
