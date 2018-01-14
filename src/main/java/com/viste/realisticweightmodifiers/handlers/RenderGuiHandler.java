@@ -18,7 +18,7 @@ public class RenderGuiHandler {
 		if (event.getType() != ElementType.EXPERIENCE) {
 			return;
 		}
-		new GuiWeight().render(ci.getStringForGUI());
+		new GuiWeight().render(ci.getStringForGUI(), ci.getWeightGuiColor());
 	}
 	
 }

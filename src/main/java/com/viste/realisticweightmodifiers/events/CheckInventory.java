@@ -26,6 +26,10 @@ public class CheckInventory {
 	private int playerWeightCap = Config.playerCapacityCap;
 	private int playerCurrentWeight;
 	
+	private static int color_default = 0xAAAAAA;
+	private static int color_warning = 0xFFD700;
+	private static int color_over_encumbered = 0xDC143C;
+	
     public HashMap<String, Integer> weightMap = new HashMap<String, Integer>();
 	
 	public CheckInventory() {
@@ -84,6 +88,18 @@ public class CheckInventory {
 		return playerCurrentWeight;
 	}
 	
+	public int getWeightGuiColor() {
+		if(playerCurrentWeight > playerWeightCap) {
+			return color_over_encumbered;
+		}
+		
+		if (playerCurrentWeight > playerWeightCap - playerWeightCap/10) {
+			return color_warning;
+		}
+		
+		return color_default;
+	}
+	
 	@SubscribeEvent
 	public void onInventoryUpdate(PlayerTickEvent evt) {
 		if(!evt.player.capabilities.isCreativeMode) {
@@ -108,8 +124,6 @@ public class CheckInventory {
 			} else {
 				evt.player.capabilities.setPlayerWalkSpeed(0.1f);
 			}
-			
-			
 		}
 	}
 	
