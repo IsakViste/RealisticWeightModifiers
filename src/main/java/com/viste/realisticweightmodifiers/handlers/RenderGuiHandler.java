@@ -9,8 +9,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RenderGuiHandler {
 	private CheckInventory ci;
+	private GuiWeight gw;
 	public RenderGuiHandler(CheckInventory checkInventory) {
 		ci = checkInventory;
+		gw = new GuiWeight();
 	}
 	
 	@SubscribeEvent
@@ -18,7 +20,8 @@ public class RenderGuiHandler {
 		if (event.getType() != ElementType.EXPERIENCE) {
 			return;
 		}
-		new GuiWeight().render(ci.getStringForGUI(), ci.getWeightGuiColor());
+		
+		gw.renderWeight(ci.getPlayerCurrentWeight(), ci.getPlayerWeightCap());
 	}
 	
 }
