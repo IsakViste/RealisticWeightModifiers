@@ -9,18 +9,14 @@ import net.minecraft.client.gui.ScaledResolution;
 public class GuiWeight extends Gui {
 	private FontRenderer fontRenderer;
 	private ScaledResolution scaled;
+	private Minecraft minecraft;
 	private int width, height;
 	private static int color_default = 0xAAAAAA;
 	private static int color_warning = 0xFFD700;
 	private static int color_over_encumbered = 0xDC143C;
 
 	public GuiWeight() {
-		Minecraft minecraft = Minecraft.getMinecraft();
-		fontRenderer = minecraft.fontRenderer;
-		
-		scaled = new ScaledResolution(minecraft);
-		width = scaled.getScaledWidth();
-		height = scaled.getScaledHeight();
+		this.minecraft = Minecraft.getMinecraft();
 	}
 	
 	
@@ -45,6 +41,11 @@ public class GuiWeight extends Gui {
 	}
 		
 	public void render(String string, int color) {
-		fontRenderer.drawStringWithShadow(string, width - fontRenderer.getStringWidth(string) - 2, height - 10, color);
+		fontRenderer = this.minecraft.fontRenderer;
+		this.scaled = new ScaledResolution(minecraft);
+		width = scaled.getScaledWidth();
+		height = scaled.getScaledHeight();
+
+		fontRenderer.drawStringWithShadow(string, this.width - fontRenderer.getStringWidth(string) - 2, this.height - 10, color);
 	}
 }
